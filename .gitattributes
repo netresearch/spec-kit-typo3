@@ -1,0 +1,19 @@
+# The CLAUDE.md / GEMINI.md aliases are symlinks to AGENTS.md, and Spec Kit's
+# installer refuses an archive containing one:
+#
+#   Validation Error: Unsafe symlink in tar.gz archive: spec-kit-typo3-main/CLAUDE.md
+#
+# `safe_extract_archive` rejects symlinks outright, so with them in the tarball
+# the documented `specify preset add --from …` install fails before anything is
+# read. Keeping them out of the archive keeps both properties: an agent that
+# opens CLAUDE.md in a clone still finds the rules, and the distributed archive
+# is symlink-free.
+#
+# Do not remove these two lines to "clean up" — measured 2026-08-17, the install
+# breaks immediately.
+/CLAUDE.md export-ignore
+/GEMINI.md export-ignore
+
+# Not part of the preset a consumer installs. CHANGELOG.md stays in — the
+# publishing guide lists it as part of the preset structure.
+/.gitattributes export-ignore
