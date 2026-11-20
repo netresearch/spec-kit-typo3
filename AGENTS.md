@@ -53,6 +53,12 @@ The `--from` run is not redundant. `--dev` copies a directory and never builds a
 
 `--priority 5` matters: `specify preset add` defaults to 10, and a preset at 10 ties with everything else installed without an explicit priority. Verify with `resolve` rather than assuming — the append landing in the wrong order is invisible until an agent reads it.
 
+## What Spec Kit does not record
+
+Spec Kit keeps no record of where a preset came from. `specify preset add` writes `"source": "local"` into `.specify/presets/.registry` whether the preset came from `--dev`, `--from <url>` or a catalog id (read in the source of Spec Kit 0.16.4), and no `specify` command reinstalls presets from a declaration. A consuming repository therefore cannot declare this preset as a dependency: the install command in its documentation is the only record, the URL in that command is the only pin, and nothing checks that anyone ran it. A consumer's documentation should say that plainly rather than imply a gate — and it is why `README.md` tells consumers to install from a tag once one exists.
+
+To see what a project has installed, use `specify preset list`. `specify preset info <id>` is not an installation check: for a preset listed in a configured catalog it falls back to the catalog and exits 0 with `Status: not installed` (measured with `lean` in an empty project). This preset is in no catalog today, so `specify preset info typo3` exits 1 when it is missing; that changes the day it is catalogued.
+
 ## Releasing
 
 Bump `preset.yml`'s `preset.version` and add the `CHANGELOG.md` section in the same commit, then tag `vX.Y.Z`. The install URL in `README.md` names a concrete tag, so it has to be bumped with the release or it will keep pointing at the previous one.
